@@ -1,0 +1,75 @@
+MODEL:
+  TRANSFORMER_TYPE: 'ViT-B-16'
+  STRIDE_SIZE: [ 16, 16 ]
+  SIE_CAMERA: True
+  DIRECT: 0
+  SIE_COE: 1.0
+  ID_LOSS_WEIGHT: 0.25
+  TRIPLET_LOSS_WEIGHT: 1.0
+  GLOBAL_LOCAL: True
+  # HDM: True
+  # ATM: True
+  HDM: False
+  ATM: False
+  HEAD: 8
+
+  # IADD配置
+  IADD:
+    ENABLED: True              
+    WARMUP_EPOCHS: 10
+    # MCD & 动态权重
+    TEMPERATURE: 2.0            # 用于 sigmoid(gap * T) 的温度（越大越“硬”）
+    HARD_NEG_K: 4               # MCD 的 Top-K hard negatives
+    # IADD loss 权重
+    LAMBDA_DISTILL: 0.35        # 蒸馏 Loss 权重（建议先偏小，稳定后再加）
+    LAMBDA_HYBRID: 0.75         # 混合 Triplet Loss 权重
+
+    # 三模态策略
+    # 可选："teacher2students"（推荐） / "weak2_mcd" / "mean"
+    FUSION_MODE: "teacher2students"
+
+    # teacher2students 相关
+    T2S_INSTANCEWISE: True      # True=按样本选teacher（默认推荐）
+    T2S_TEMPERATURE: 2.0        # distill softmax 温度（越大越平滑）
+    T2S_LOG_PERIOD: 50          # 0=不打印；建议 50/100
+
+    # weak2_mcd 相关
+    FUSION_TAU: 1.0             # softmax(mcd/tau) 的 tau
+    FUSION_DETACH: True         # 融合权重是否 detach（建议 True 更稳）
+    FUSION_LOG_PERIOD: 50       # 0=不打印
+    MCD_GAP_THRESHOLD: 0.5      # 熔断阈值：gap 过大则回退 mean fusion
+
+INPUT:
+  SIZE_TRAIN: [ 128, 256 ]
+  SIZE_TEST: [ 128, 256 ]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 14
+
+DATASETS:
+  NAMES: ('MSVR310')
+  ROOT_DIR: '/home/suchao/dataset/MMO_REID'
+
+SOLVER:
+  BASE_LR: 0.00035
+  WARMUP_ITERS: 10
+  MAX_EPOCHS: 50
+  OPTIMIZER_NAME: 'Adam'
+  GAMMA: 0.1
+  IMS_PER_BATCH: 32
+  EVAL_PERIOD: 1
+
+TEST:
+  IMS_PER_BATCH: 64
+  RE_RANKING: 'no'
+  WEIGHT: ''
+  NECK_FEAT: 'before'
+  FEAT_NORM: 'yes'
+  MISS: "nothing"
+
+OUTPUT_DIR: 'output/IADD/MSVR310'
