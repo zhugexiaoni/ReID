@@ -2,13 +2,15 @@ MODEL:
   TRANSFORMER_TYPE: 'ViT-B-16'
   STRIDE_SIZE: [ 16, 16 ]
   SIE_CAMERA: True
-  DIRECT: 1
+  DIRECT: 0
   SIE_COE: 1.0
   ID_LOSS_WEIGHT: 0.25
   TRIPLET_LOSS_WEIGHT: 1.0
   GLOBAL_LOCAL: True
-  HDM: True
-  ATM: True
+  # HDM: True
+  # ATM: True
+  HDM: False
+  ATM: False
   HEAD: 8
 
 INPUT:
@@ -44,7 +46,7 @@ TEST:
   FEAT_NORM: 'yes'
   MISS: "nothing"
 
-OUTPUT_DIR: 'output/RGBNT100'
+OUTPUT_DIR: 'output/RGBNT100_no_moe'
 
 
 

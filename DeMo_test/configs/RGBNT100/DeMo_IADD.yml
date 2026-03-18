@@ -3,17 +3,21 @@ MODEL:
   STRIDE_SIZE: [ 16, 16 ]
   SIE_CAMERA: True
   DIRECT: 0
+  # DIRECT: 1
   SIE_COE: 1.0
   ID_LOSS_WEIGHT: 0.25
   TRIPLET_LOSS_WEIGHT: 1.0
   GLOBAL_LOCAL: True
-  HDM: True
-  ATM: True
+  # HDM: True
+  # ATM: True
+  HDM: False
+  ATM: False
   HEAD: 8
 
   # IADD配置
   IADD:
-    ENABLED: True  # 启用IADD
+    ENABLED: True
+    WARMUP_EPOCHS: 5
     TEMPERATURE: 2.0  # Sigmoid 温度
     HARD_NEG_K: 4    # MCD 计算用的 Top-K
     LAMBDA_DISTILL: 0.3  # 蒸馏 Loss 权重
@@ -55,4 +59,4 @@ TEST:
   FEAT_NORM: 'yes'
   MISS: "nothing"
 
-OUTPUT_DIR: 'output/IADD/RGBNT100'
+OUTPUT_DIR: 'output/IADD/RGBNT100_no_moe'

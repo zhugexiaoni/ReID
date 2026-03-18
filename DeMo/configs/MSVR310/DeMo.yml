@@ -7,8 +7,10 @@ MODEL:
   ID_LOSS_WEIGHT: 0.25
   TRIPLET_LOSS_WEIGHT: 1.0
   GLOBAL_LOCAL: True
-  HDM: True
-  ATM: True
+  # HDM: True
+  # ATM: True
+  HDM: False
+  ATM: False
   HEAD: 8
 
 INPUT:
@@ -44,5 +46,5 @@ TEST:
   FEAT_NORM: 'yes'
   MISS: "nothing"
 
-OUTPUT_DIR: 'output/MSVR310'
+OUTPUT_DIR: 'output/MSVR310_no_moe'
 

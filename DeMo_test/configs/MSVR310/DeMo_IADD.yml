@@ -3,6 +3,7 @@ MODEL:
   STRIDE_SIZE: [ 16, 16 ]
   SIE_CAMERA: True
   DIRECT: 0
+  # DIRECT: 1
   SIE_COE: 1.0
   ID_LOSS_WEIGHT: 0.25
   TRIPLET_LOSS_WEIGHT: 1.0
@@ -15,7 +16,7 @@ MODEL:
 
   # IADD配置
   IADD:
-    ENABLED: True              
+    ENABLED: False              
     WARMUP_EPOCHS: 10
     # MCD & 动态权重
     TEMPERATURE: 2.0            # 用于 sigmoid(gap * T) 的温度（越大越“硬”）
@@ -72,4 +73,4 @@ TEST:
   FEAT_NORM: 'yes'
   MISS: "nothing"
 
-OUTPUT_DIR: 'output/IADD/MSVR310'
+OUTPUT_DIR: 'output/IADD/MSVR310_no_moe'

@@ -84,10 +84,6 @@ def _run_one(cfg_in, args, alpha: float, beta: float):
     out_dir = base_out + tag
     cfg_run.OUTPUT_DIR = out_dir
 
-    # Force enable IADD for this script
-    if not cfg_run.MODEL.IADD.ENABLED:
-        print("Forcing IADD enabled for this script.")
-        cfg_run.MODEL.IADD.ENABLED = True
 
     cfg_run.freeze()
 
@@ -222,6 +218,10 @@ def main():
                         help="comma-separated list for alpha = MODEL.IADD.LAMBDA_DISTILL")
     parser.add_argument("--grid_beta", default="0.01,0.1,0.3,0.5,0.7,1.0", type=str,
                         help="comma-separated list for beta = MODEL.IADD.LAMBDA_HYBRID")
+    # parser.add_argument("--grid_alpha", default=None, type=str,
+    #                     help="comma-separated list for alpha = MODEL.IADD.LAMBDA_DISTILL")
+    # parser.add_argument("--grid_beta", default=None, type=str,
+    #                     help="comma-separated list for beta = MODEL.IADD.LAMBDA_HYBRID")
     parser.add_argument("--no_save", action='store_true',
                         help="disable saving checkpoints/best model (recommended for grid search)")
 
@@ -262,9 +262,6 @@ def main():
 
     else:
         # Original single-run behavior
-        if not cfg.MODEL.IADD.ENABLED:
-            print("Forcing IADD enabled for this script.")
-            cfg.MODEL.IADD.ENABLED = True
 
         cfg.freeze()
 

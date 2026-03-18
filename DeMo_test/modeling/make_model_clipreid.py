@@ -172,7 +172,7 @@ def make_model(cfg, num_class, camera_num, view_num):
 
 from .clip import clip
 def load_clip_to_cpu(cfg,backbone_name, h_resolution, w_resolution, vision_stride_size):
-    model_path = '/home/suchao/ZGS_CODE/ReID/checkpoints/ViT-B-16.pt'
+    model_path = '/home/suchao/ReID/checkpoints/ViT-B-16.pt'
 
     try:
         # loading JIT archive

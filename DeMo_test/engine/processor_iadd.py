@@ -135,32 +135,39 @@ def do_train_iadd(cfg,
 
                 loss_total = 0
 
-                # --- 常规 Loss ---
+               # --- 常规 Loss ---
                 if isinstance(output, dict):
-                    if 'moe_score' in output:
+                    # Determine base loss input based on available outputs
+                    if 'moe_score' in output and output['moe_score'] is not None:
+                        # MOE mode: use moe output
                         score_final = output['moe_score']
                         feat_final = output['moe_feat']
-                    elif 'dmcg_score' in output and output['dmcg_score'] is not None:
-                        score_final = output['dmcg_score']
-                        feat_final = output['dmcg_feat']
+                        loss_base = loss_fn(score=score_final, feat=feat_final,
+                                           target=target, target_cam=target_cam)
+                    elif 'ori_score' in output and output['ori_score'] is not None:
+                        # DIRECT=1 mode: use ori output
+                        score_final = output['ori_score']
+                        feat_final = output['ori_feat']
+                        loss_base = loss_fn(score=score_final, feat=feat_final,
+                                           target=target, target_cam=target_cam)
+                    elif 'logits_dict' in output:
+                        # DIRECT=0 mode: sum up three modality losses
+                        r_score = output['logits_dict']['RGB']
+                        n_score = output['logits_dict']['NI']
+                        t_score = output['logits_dict']['TI']
+                        r_feat = output['feats_dict']['RGB']
+                        n_feat = output['feats_dict']['NI']
+                        t_feat = output['feats_dict']['TI']
+                        
+                        loss_r = loss_fn(score=r_score, feat=r_feat, target=target, target_cam=target_cam)
+                        loss_n = loss_fn(score=n_score, feat=n_feat, target=target, target_cam=target_cam)
+                        loss_t = loss_fn(score=t_score, feat=t_feat, target=target, target_cam=target_cam)
+                        loss_base = (loss_r + loss_n + loss_t) / 3.0
+                        score_final = r_score  # For accuracy logging
                     else:
-                        score_final = output.get('ori_score', output.get('score'))
-                        feat_final = output.get('ori_feat', output.get('feat'))
-
-                    # --- Base loss (always on) ---
-                    if (not bool(getattr(cfg.MODEL, 'HDM', False))) and (not bool(getattr(cfg.MODEL, 'ATM', False))) and (not bool(getattr(cfg.MODEL, 'DIRECT', False))):
-                        if (score_final is None) or (feat_final is None):
-                            score_final = output.get('ori_score', None)
-                            feat_final = output.get('ori_feat', None)
-                        if (score_final is None) or (feat_final is None):
-                            raise ValueError(
-                                "[IADD] HDM/ATM=False & DIRECT=0 expects ori_score/ori_feat from adapter (aux head), but got None"
-                            )
-
-                    loss_base = loss_fn(score=score_final, feat=feat_final,
-                                        target=target, target_cam=target_cam)
+                        raise ValueError("Unknown output format from model")
+                    
                     loss_total += loss_base
-
                     # --- IADD 插件逻辑（warmup 前完全跳过） ---
                     if iadd_active:
                         if 'logits_dict' not in output or 'feats_dict' not in output:

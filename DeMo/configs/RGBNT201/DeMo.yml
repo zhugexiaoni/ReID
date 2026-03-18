@@ -7,8 +7,10 @@ MODEL:
   ID_LOSS_WEIGHT: 0.25
   TRIPLET_LOSS_WEIGHT: 1.0
   GLOBAL_LOCAL: True
-  HDM: True
-  ATM: True
+  # HDM: True
+  # ATM: True
+  HDM: False
+  ATM: False
   HEAD: 4
 
 INPUT:
@@ -32,17 +34,17 @@ SOLVER:
   WARMUP_ITERS: 10
   MAX_EPOCHS: 50
   OPTIMIZER_NAME: 'Adam'
-  IMS_PER_BATCH: 128
+  IMS_PER_BATCH: 64
   EVAL_PERIOD: 1
 
 TEST:
-  IMS_PER_BATCH: 256
+  IMS_PER_BATCH: 128
   RE_RANKING: 'no'
   WEIGHT: ''
   NECK_FEAT: 'before'
   FEAT_NORM: 'yes'
   MISS: "nothing"
 
-OUTPUT_DIR: 'output/RGBNT201'
+OUTPUT_DIR: 'output/RGBNT201_no_moe'
 
 
