@@ -1,3 +1,5 @@
 **/output/
 **/checkpoints/
 **/__pycache__
+*.zip
+/文档
